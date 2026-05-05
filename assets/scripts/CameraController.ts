@@ -8,8 +8,8 @@ export class CameraController extends Component {
     public target: Node = null;
 
     public rotateSpeed: number = 0.3;
-    public minPitch: number = 20;
-    public maxPitch: number = 80;
+    public minPitch: number = -30;
+    public maxPitch: number = 45;
 
     private isDragging: boolean = false;
     private yaw: number = 0;
