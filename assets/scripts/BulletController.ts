@@ -1,6 +1,6 @@
-import { _decorator, Component, Node, Vec3, Collider, ICollisionEvent } from 'cc';
+import { _decorator, Component, Vec3, Collider, ICollisionEvent } from 'cc';
 import { EnemyController } from './EnemyController';
-const { ccclass, property } = _decorator;
+const { ccclass } = _decorator;
 
 @ccclass('BulletController')
 export class BulletController extends Component {
@@ -11,7 +11,7 @@ export class BulletController extends Component {
 
     private direction: Vec3 = new Vec3();
     private lifeTimer: number = 0;
-    private maxLife: number = 5; // 5秒後自動消失
+    private maxLife: number = 5;
 
     public init(direction: Vec3, speed: number, damage: number, isCrit: boolean) {
         this.direction = direction.clone();
@@ -22,7 +22,6 @@ export class BulletController extends Component {
     }
 
     start() {
-        // 監聽碰撞
         const collider = this.getComponent(Collider);
         if (collider) {
             collider.on('onCollisionEnter', this.onCollisionEnter, this);
@@ -30,15 +29,13 @@ export class BulletController extends Component {
     }
 
     update(deltaTime: number) {
-        // 移動
         const pos = this.node.worldPosition;
         this.node.setWorldPosition(
             pos.x + this.direction.x * this.speed * deltaTime,
-            pos.y,
+            0,
             pos.z + this.direction.z * this.speed * deltaTime
         );
 
-        // 生命週期
         this.lifeTimer += deltaTime;
         if (this.lifeTimer >= this.maxLife) {
             this.node.destroy();

@@ -34,9 +34,8 @@ export class Leaderboard extends Component {
         // 名字只取前三個大寫英文字母
         const cleanName = name
             .toUpperCase()
-            .replace(/[^A-Z]/g, '')
-            .substring(0, 3)
-            .padEnd(3, 'A');
+            .replace(/[^A-Z0-9]/g, '')
+            .substring(0, 3);
 
         const entries = this.getEntries();
         entries.push({ name: cleanName, score });

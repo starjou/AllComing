@@ -62,7 +62,7 @@ export class TurretController extends Component {
     }
 
     private shoot() {
-        if (!this.bulletPrefab || !this.gunPoint) return;
+        if (!this.bulletPrefab) return;
 
         const gm = GameManager.instance;
 
@@ -71,10 +71,9 @@ export class TurretController extends Component {
             ? gm.getDamage() * gm.getCritMulti()
             : gm.getDamage();
 
-        const myPos = this.gunPoint.worldPosition;
+        const myPos = this.node.worldPosition;
         const targetPos = this.target.worldPosition;
 
-        // 強制同一平面計算方向
         const dir = new Vec3(
             targetPos.x - myPos.x,
             0,
@@ -84,6 +83,7 @@ export class TurretController extends Component {
         const bullet = instantiate(this.bulletPrefab);
         this.node.scene.addChild(bullet);
         bullet.setWorldPosition(myPos.x, 0, myPos.z);
+        // console.log('bullet world pos after set:', bullet.worldPosition);
 
         const ctrl = bullet.getComponent(BulletController);
         if (ctrl) {

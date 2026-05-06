@@ -13,13 +13,14 @@ export class CameraController extends Component {
 
     private isDragging: boolean = false;
     private yaw: number = 0;
-    private pitch: number = 45;
+    private pitch: number = 15;
     private distance: number = 18;
 
     start() {
         input.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
         input.on(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
         input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
+        input.on(Input.EventType.MOUSE_WHEEL, this.onMouseWheel, this);
         this.updateCameraPosition();
     }
 
@@ -27,6 +28,7 @@ export class CameraController extends Component {
         input.off(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
         input.off(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
         input.off(Input.EventType.MOUSE_UP, this.onMouseUp, this);
+        input.off(Input.EventType.MOUSE_WHEEL, this.onMouseWheel, this);
     }
 
     private onMouseDown(event: EventMouse) {
@@ -47,6 +49,13 @@ export class CameraController extends Component {
         if (event.getButton() === 0) {
             this.isDragging = false;
         }
+    }
+
+    private onMouseWheel(event: EventMouse) {
+        // console.log('scrollY:', event.getScrollY());
+        this.distance -= event.getScrollY() * 0.005;
+        this.distance = Math.max(5, Math.min(50, this.distance));
+        this.updateCameraPosition();
     }
 
     private updateCameraPosition() {

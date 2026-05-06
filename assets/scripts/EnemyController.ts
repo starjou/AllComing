@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec3 } from 'cc';
+import { _decorator, Component, Node, Vec3, Collider, ICollisionEvent } from 'cc';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
@@ -10,11 +10,30 @@ export class EnemyController extends Component {
     public speed: number = 3;
     public scoreValue: number = 10;
     public moneyValue: number = 5;
+    public damage: number = 10;
 
     private target: Node = null;
 
     start() {
+        const collider = this.getComponent(Collider);
+        if (collider) {
+            collider.on('onCollisionEnter', this.onCollisionEnter, this);
+        }
+    }
 
+    onDestroy() {
+        const collider = this.getComponent(Collider);
+        if (collider) {
+            collider.off('onCollisionEnter', this.onCollisionEnter, this);
+        }
+    }
+
+    private onCollisionEnter(event: ICollisionEvent) {
+        const other = event.otherCollider.node;
+        if (other.name === 'Turret') {
+            GameManager.instance.takeDamage(this.damage);
+            this.node.destroy();
+        }
     }
 
     public init(hp: number, speed: number, target: Node) {
@@ -27,11 +46,19 @@ export class EnemyController extends Component {
     update(deltaTime: number) {
         if (!this.target) return;
 
-        // 朝目標移動
         const targetPos = this.target.worldPosition;
         const myPos = this.node.worldPosition;
         const dir = new Vec3();
         Vec3.subtract(dir, targetPos, myPos);
+
+        // 距離夠近就造成傷害
+        const dist = Vec3.distance(myPos, targetPos);
+        if (dist < 1.2) {
+            GameManager.instance.takeDamage(this.damage);
+            this.node.destroy();
+            return;
+        }
+
         dir.normalize();
         const move = new Vec3();
         Vec3.multiplyScalar(move, dir, this.speed * deltaTime);
@@ -41,7 +68,6 @@ export class EnemyController extends Component {
             myPos.z + move.z
         );
 
-        // 面向目標
         const angle = Math.atan2(dir.x, dir.z) * (180 / Math.PI);
         this.node.setWorldRotationFromEuler(0, angle, 0);
     }
