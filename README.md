@@ -1,6 +1,6 @@
 # AllComing
 
-練習 Cocos Creator 3D 的射擊遊戲專案。
+以 Claude AI 補助，做為熟悉 Cocos Creator 3D 開發的射擊遊戲專案。
 3D 俯視角（Top-Down）自動防禦射擊遊戲。
 
 ## 遊戲介紹
