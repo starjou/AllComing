@@ -14,7 +14,7 @@ export class CameraController extends Component {
     public maxPitch: number = 45;
 
     private isDragging: boolean = false;
-    private yaw: number = 0;
+    private yaw: number = 180;
     private pitch: number = 15;
     // 鏡頭與目標的初始距離，滾輪可縮放（範圍 5~50）
     private distance: number = 18;

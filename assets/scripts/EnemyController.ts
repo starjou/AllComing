@@ -1,9 +1,15 @@
-import { _decorator, Component, Node, Vec3, Collider, ICollisionEvent } from 'cc';
+import { _decorator, Component, Node, Vec3, Collider, ICollisionEvent, Prefab, instantiate, AudioSource, AudioClip } from 'cc';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyController')
 export class EnemyController extends Component {
+
+    @property(Prefab)
+    public explosionPrefab: Prefab = null;
+
+    @property(AudioClip)
+    public explosionSound: AudioClip = null;
 
     public maxHP: number = 20;
     public currentHP: number = 20;
@@ -84,6 +90,25 @@ export class EnemyController extends Component {
     }
 
     private die() {
+        const audioSource = this.getComponent(AudioSource);
+        if (audioSource && this.explosionSound) {
+            audioSource.playOneShot(this.explosionSound);
+        }
+
+        // 生成爆破效果
+        if (this.explosionPrefab) {
+            const explosion = instantiate(this.explosionPrefab);
+            this.node.scene.addChild(explosion);
+            explosion.setWorldPosition(this.node.worldPosition);
+
+            // 播完自動銷毀
+            setTimeout(() => {
+                if (explosion && explosion.isValid) {
+                    explosion.destroy();
+                }
+            }, 1000);
+        }
+
         GameManager.instance.onEnemyKilled(this.scoreValue, this.moneyValue);
         this.node.destroy();
     }

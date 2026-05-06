@@ -64,7 +64,17 @@ export class UIManager extends Component {
                 this.skillCostLabels[i].string = `$${gm.getSkillCost(i)}`;
             }
             if (this.skillLevelLabels[i]) {
-                this.skillLevelLabels[i].string = `Lv.${gm.skillLevels[i]}`;
+                const skillValues = [
+                    `${gm.getFireRate().toFixed(1)}/s`,      // 發射頻率
+                    `${gm.getBulletSpeed().toFixed(0)}`,      // 子彈速度
+                    `${gm.getDamage().toFixed(0)}`,           // 子彈傷害
+                    `${(gm.getCritRate() * 100).toFixed(0)}%`,  // 爆擊率
+                    `${(gm.getCritMulti() * 100).toFixed(0)}%`, // 爆擊倍率
+                    `${gm.maxHP}HP`,                          // 最大血量
+                    `${gm.regenPerSecond}/s`,                 // 回血
+                ];
+                this.skillLevelLabels[i].string = skillValues[i];
+                // this.skillLevelLabels[i].string = `Lv.${gm.skillLevels[i]}`;
             }
         }
 

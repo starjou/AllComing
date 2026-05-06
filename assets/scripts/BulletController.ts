@@ -1,9 +1,12 @@
-import { _decorator, Component, Vec3, Collider, ICollisionEvent } from 'cc';
+import { _decorator, Component, Vec3, Collider, ICollisionEvent, AudioSource, AudioClip } from 'cc';
 import { EnemyController } from './EnemyController';
-const { ccclass } = _decorator;
+const { ccclass, property } = _decorator;
 
 @ccclass('BulletController')
 export class BulletController extends Component {
+
+    @property(AudioClip)
+    public hitSound: AudioClip = null;
 
     public speed: number = 10;
     public damage: number = 10;
@@ -47,6 +50,11 @@ export class BulletController extends Component {
         const enemy = other.getComponent(EnemyController);
         if (enemy) {
             enemy.takeDamage(this.damage);
+            // 播放擊中音效
+            const audioSource = this.getComponent(AudioSource);
+            if (audioSource && this.hitSound) {
+                audioSource.playOneShot(this.hitSound);
+            }
             this.node.destroy();
         }
     }
