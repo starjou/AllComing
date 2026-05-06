@@ -12,16 +12,33 @@ export class EnemySpawner extends Component {
     @property(Node)
     public turret: Node = null;
 
-    // 初始參數
+    // 初始出怪間隔（秒）。每累積 100 分提升一個難度等級，間隔乘以 0.9，最低壓縮至 0.5 秒。
+    // 例如：設 3 → 第 1 級變 2.7 秒、第 2 級變 2.43 秒，以此類推。
     public baseSpawnInterval: number = 3;
+
+    // 初始敵人血量。每個難度等級增加 5 點（level * 5）。
+    // 例如：設 20 → 第 1 級 25、第 2 級 30。
     public baseEnemyHP: number = 20;
+
+    // 初始敵人移動速度。每個難度等級增加 0.2（level * 0.2）。
+    // 例如：設 3 → 第 1 級 3.2、第 2 級 3.4。
     public baseEnemySpeed: number = 3;
+
+    // 敵人生成的圓周半徑（世界單位）。敵人會隨機落在以場景原點為圓心、此半徑的圓上。
+    // 調大可讓玩家有更多反應時間，調小則更緊迫。
     public spawnRadius: number = 20;
 
+    // 難度調整參數
+    public scorePerLevel: number = 50;        // 每幾分升一級
+    public spawnRateDecay: number = 0.8;       // 生成間隔衰減率（越小越快）
+    public minSpawnInterval: number = 0.1;     // 最小生成間隔（秒）
+    public hpGrowthPerLevel: number = 5;       // 每級敵人血量增加
+    public speedGrowthPerLevel: number = 0.2;  // 每級敵人速度增加
+
     private spawnTimer: number = 0;
-    private currentInterval: number = 3;
-    private currentHP: number = 20;
-    private currentSpeed: number = 3;
+    private currentInterval: number = 0;
+    private currentHP: number = 0;
+    private currentSpeed: number = 0;
 
     start() {
         this.currentInterval = this.baseSpawnInterval;
@@ -43,10 +60,10 @@ export class EnemySpawner extends Component {
     }
 
     private updateDifficulty(score: number) {
-        const level = Math.floor(score / 100);
-        this.currentInterval = Math.max(0.5, this.baseSpawnInterval * Math.pow(0.9, level));
-        this.currentHP = this.baseEnemyHP + level * 5;
-        this.currentSpeed = this.baseEnemySpeed + level * 0.2;
+        const level = Math.floor(score / this.scorePerLevel);
+        this.currentInterval = Math.max(this.minSpawnInterval, this.baseSpawnInterval * Math.pow(this.spawnRateDecay, level));
+        this.currentHP = this.baseEnemyHP + level * this.hpGrowthPerLevel;
+        this.currentSpeed = this.baseEnemySpeed + level * this.speedGrowthPerLevel;
     }
 
     private spawnEnemy() {

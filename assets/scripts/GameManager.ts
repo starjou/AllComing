@@ -16,24 +16,36 @@ export class GameManager extends Component {
     public isGameOver: boolean = false;
 
     // 血量
+    // maxHP：玩家初始最大血量。升級技能 5 後改由 applySkill 覆蓋（100 + level * 20），此值僅作開局基準。
     public maxHP: number = 100;
-    public currentHP: number = 100;
+    public currentHP: number = 0;
+    // regenPerSecond：每秒回血量，初始為 0（不回血）。升級技能 6 後每級 +1 點/秒。
     public regenPerSecond: number = 0;
     private regenTimer: number = 0;
 
-    // 技能等級
-    public skillLevels: number[] = [0, 0, 0, 0, 0, 0, 0];
+    // 技能等級，索引對應如下，初始全為 0：
     // 0:發射頻率 1:子彈速度 2:子彈傷害 3:爆擊率 4:爆擊倍率 5:最大血量 6:回血
+    public skillLevels: number[] = [0, 0, 0, 0, 0, 0, 0];
 
-    // 初始參數
+    // 技能費用成長率，數值越高升級費用增加越快（建議範圍 1.2~2.0）
+    public skillCostGrowthRate: number = 1.2;
+
+    // 初始參數（技能升級後的實際數值由各 get* 方法計算，不需手動改 current）
+    // baseFireRate：初始發射頻率（次/秒）。每升一級 +0.3。
     public baseFireRate: number = 1;
+    // baseBulletSpeed：初始子彈速度（世界單位/秒）。每升一級 +2。
     public baseBulletSpeed: number = 10;
+    // baseDamage：初始子彈傷害。每升一級 +5。
     public baseDamage: number = 10;
+    // baseCritRate：初始爆擊率（0~1）。每升一級 +0.05（即 +5%）。
     public baseCritRate: number = 0.05;
+    // baseCritMulti：初始爆擊倍率。每升一級 +0.05（即 +5%）。
     public baseCritMulti: number = 1.05;
 
-    // 技能基礎費用
-    public skillBaseCost: number[] = [50, 50, 50, 50, 50, 50, 150];
+    // 各技能的基礎升級費用，對應 skillLevels 索引。
+    // 實際費用公式：baseCost * (當前等級 + 1)²，等級越高費用急劇上升。
+    // 技能 6（回血）初始費用設 150，比其他技能貴。
+    public skillBaseCost: number[] = [1, 1, 1, 1, 1, 1, 1];
 
     start() {
         gameManagerInstance = this;
@@ -55,18 +67,20 @@ export class GameManager extends Component {
 
     // 取得技能升級費用
     public getSkillCost(skillIndex: number): number {
-        const level = this.skillLevels[skillIndex] + 1;
-        return this.skillBaseCost[skillIndex] * level * level;
+        const idx = Number(skillIndex);
+        const level = this.skillLevels[idx] + 1;
+        return Math.floor(this.skillBaseCost[idx] * Math.pow(this.skillCostGrowthRate, level));
     }
 
     // 升級技能
     public upgradeSkill(skillIndex: number): boolean {
-        const cost = this.getSkillCost(skillIndex);
+        const idx = Number(skillIndex);
+        const cost = this.getSkillCost(idx);
         if (this.money < cost) return false;
 
         this.money -= cost;
-        this.skillLevels[skillIndex]++;
-        this.applySkill(skillIndex);
+        this.skillLevels[idx]++;
+        this.applySkill(idx);
         return true;
     }
 
@@ -100,6 +114,7 @@ export class GameManager extends Component {
 
     // 回血
     public heal(amount: number) {
+        if (this.isGameOver) return;
         this.currentHP = Math.min(this.maxHP, this.currentHP + amount);
     }
 
