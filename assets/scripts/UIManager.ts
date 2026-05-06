@@ -114,4 +114,8 @@ export class UIManager extends Component {
     public onRestart(event: any) {
         director.loadScene('main');
     }
+
+    public onGitHub(event: any) {
+        window.open('https://github.com/starjou/AllComing', '_blank');
+    }
 }
