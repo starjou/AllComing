@@ -59,3 +59,11 @@ Cocos Button 的 Click Event 回調函式簽名是 `(event, customEventData)`，
 這兩天用 Claude 輔助建立了第一個 Cocos 遊戲的感想是：大概知道了 Cocos 遊戲開發的觀念，Creator 的介面、用法。Claude 包辦了絕大多數的 coding 及知識面，而我則扮演一個專案經理的角色，並在某些除錯的過程中防止 Claude 鑽牛角尖繞太遠。
 
 兩天的時間其實並沒有時間去完整的看過程式碼，所以可以說給于 Claude 的程式很大的信任，只靠自行測試找出問題讓他修正，這其實是我比較不習慣的開發方式。但是在開發效率上是非常大的增進，我理想的模式是在功能開發完，還是要完整的消化完 AI 產出的程式碼，因此開發時間不能以程式寫完，測試完花的時間來計算，這個在之後實務工作再調整吧。
+
+---
+
+## 後記
+
+之後用了一個乾淨的小專案測試 `RigiBody.linearVelocity` 的問題找到答案了。
+`Rigibody.linearVelocity` 直接賦值無效，需要用 `setLinearVelocity()` 方法才行。
+就是這麼簡單 … 低級錯誤。
