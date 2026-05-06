@@ -51,9 +51,11 @@
 
 ## 線上試玩
 
-👉 [點此試玩](https://starjou.github.io/allcoming/)
+👉 [點此試玩](https://starjou.github.io/AllComing/)
 
 ## 開發說明
 
 這是我初次接觸 Cocos Creator，在兩天內從零開始完成的練習專案。
 目的是評估自身在遊戲前端開發的學習能力與技術延伸性。
+
+[開發日誌](./DEVLOG.md)
