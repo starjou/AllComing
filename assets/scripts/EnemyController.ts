@@ -8,8 +8,10 @@ export class EnemyController extends Component {
     public maxHP: number = 20;
     public currentHP: number = 20;
     public speed: number = 3;
+    // 擊殺後給予的分數與金錢
     public scoreValue: number = 10;
     public moneyValue: number = 5;
+    // 碰到砲台或距離夠近時對玩家造成的傷害
     public damage: number = 10;
 
     private target: Node = null;

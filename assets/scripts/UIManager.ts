@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Label, ProgressBar, Button, EditBox, director } from 'cc';
+import { _decorator, Component, Node, Label, ProgressBar, EditBox, Button, director } from 'cc';
 import { GameManager } from './GameManager';
 import { Leaderboard } from './Leaderboard';
 const { ccclass, property } = _decorator;
@@ -91,9 +91,9 @@ export class UIManager extends Component {
         this.refreshLeaderboard();
 
         // 防止重複送出，disable input 和 button
-        // this.nameInput.enabled = false;
-        // const btn = event.target;
-        // btn.getComponent(Button).interactable = false;
+        this.nameInput.enabled = false;
+        const btn = event.target;
+        btn.getComponent(Button).interactable = false;
     }
 
     private refreshLeaderboard() {

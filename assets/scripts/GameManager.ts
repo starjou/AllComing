@@ -1,5 +1,5 @@
 import { _decorator, Component } from 'cc';
-const { ccclass, property } = _decorator;
+const { ccclass } = _decorator;
 
 export let gameManagerInstance: GameManager = null;
 
@@ -127,6 +127,6 @@ export class GameManager extends Component {
     // 遊戲結束
     private gameOver() {
         this.isGameOver = true;
-        // UIManager 會監聽這個
+        // UIManager 在 update 裡輪詢 isGameOver 來觸發結算畫面
     }
 }

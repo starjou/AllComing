@@ -7,13 +7,16 @@ export class CameraController extends Component {
     @property(Node)
     public target: Node = null;
 
+    // 拖曳旋轉靈敏度，值越大轉越快
     public rotateSpeed: number = 0.3;
+    // 垂直角度（仰角）限制，單位為度
     public minPitch: number = -30;
     public maxPitch: number = 45;
 
     private isDragging: boolean = false;
     private yaw: number = 0;
     private pitch: number = 15;
+    // 鏡頭與目標的初始距離，滾輪可縮放（範圍 5~50）
     private distance: number = 18;
 
     start() {
@@ -52,7 +55,6 @@ export class CameraController extends Component {
     }
 
     private onMouseWheel(event: EventMouse) {
-        // console.log('scrollY:', event.getScrollY());
         this.distance -= event.getScrollY() * 0.005;
         this.distance = Math.max(5, Math.min(50, this.distance));
         this.updateCameraPosition();
@@ -75,9 +77,5 @@ export class CameraController extends Component {
             targetPos.z + z
         );
         this.node.lookAt(targetPos);
-    }
-
-    update(deltaTime: number) {
-
     }
 }
